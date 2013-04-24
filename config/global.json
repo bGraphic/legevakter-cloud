@@ -4,6 +4,10 @@
             "applicationId": "b8miWZyVIuwxB47cjOTa6ik6B5DiaO4bnZeVQgNA", 
             "masterKey": "WUQb4U5Swa5Lk8IPxkQ0wVvNTpWNuZ7Ing0TDDEm"
         }, 
+        "Legevakta-dev": {
+            "applicationId": "4DECQGbsZc1JkVLi02vuTlRdCaqmB49RC4EDaSIV", 
+            "masterKey": "YQx3lqbeAowfaY27L0q4z1fEqpigt78PjB9oz921"
+        }, 
         "_default": {
             "link": "Legevakta"
         }
