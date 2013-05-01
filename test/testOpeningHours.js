@@ -59,13 +59,13 @@ describe('OpeningHours', function () {
 
 			it('should return true if date is contained in range', function (done) {
 				done();
-				var date = new Date(2013,3,28,22,00);
+				var date = new Date(2013,3,29,22,00);
 				expect(mockObject.containsDate(date)).to.be.ok();
 			});
 
 			it('should return false if date is not contained in range', function (done) {
 				done();
-				var date = new Date(2013,3,29,22,00);
+				var date = new Date(2013,3,30,22,00);
 				expect(mockObject.containsDate(date)).not.to.be.ok();
 			});
 		});

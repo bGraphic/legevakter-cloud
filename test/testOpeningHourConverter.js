@@ -33,6 +33,14 @@ describe('OpeningHourConvert', function () {
 			done();
 			expect(output.ranges.length).to.be(5);
 		});
+
+		it('returns OpeningHours that is open on the appropriate date', function (done) {
+			done();
+			var date = new Date(2013,3,30,14,00);
+			var secondDate = new Date(2013,3,30,22,00);
+			expect(output.isOpen(date)).not.to.be.ok();
+			expect(output.isOpen(secondDate)).to.be.ok();
+		});
 	});
 
 	describe('_convertIntervalToRange', function () {
