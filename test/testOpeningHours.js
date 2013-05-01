@@ -12,24 +12,114 @@ var OpeningHoursModule = require('../lib/model/opening-hours.js');
 var OpeningHourRange = OpeningHoursModule.OpeningHourRange;
 var OpeningHourTime = OpeningHoursModule.OpeningHourTime;
 var OpeningHours = OpeningHoursModule.OpeningHours;
+var OpeningHoursFormatter = OpeningHoursModule.OpeningHoursFormatter;
 
 var expect = require('expect.js');
 
 describe('OpeningHours', function () {
 
-	describe('OpeningHourTime constructor', function () {
-		var mockAttributes = {
-			day: 0,
-			hour: 18,
-			minute: 30
-		};
-		var mockObject = new OpeningHourTime(mockAttributes);
+	describe('OpeningHourTime', function () {
+		describe('constructor', function () {
+			var mockAttributes = {
+				day: 0,
+				hour: 18,
+				minute: 30
+			};
+			var mockObject = new OpeningHourTime(mockAttributes);
 
-		it('should take day, hour and minute attributes in a json and set them properly', function (done) {
-			done();
-			expect(mockObject.day).to.equal(mockAttributes.day);
-			expect(mockObject.hour).to.equal(mockAttributes.hour);
-			expect(mockObject.minute).to.equal(mockAttributes.minute);
+			it('should take day, hour and minute attributes in a json and set them properly', function (done) {
+				done();
+				expect(mockObject.day).to.equal(mockAttributes.day);
+				expect(mockObject.hour).to.equal(mockAttributes.hour);
+				expect(mockObject.minute).to.equal(mockAttributes.minute);
+			});
+		});
+
+		describe('isStartOfWeek', function () {
+			it('should return true of we are at the start of the week', function (done) {
+				done();
+
+				var attributes = {
+					day: 0,
+					hour: 0,
+					minute: 0
+				};
+				var openingHourTime = new OpeningHourTime(attributes);
+
+				expect(openingHourTime.isStartOfWeek()).to.be.ok();
+
+			});
+
+			it('should return false if we are not at the start of the week', function (done) {
+				done();
+
+				var attributes = {
+					day:1,
+					hour:1,
+					minute:1
+				};
+
+				var openingHourTime = new OpeningHourTime(attributes);
+
+				expect(openingHourTime.isStartOfWeek()).not.to.be.ok();
+			});
+		});
+
+		describe('isEndOfWeek', function () {
+			it('should return true if we are at the end of the week', function (done) {
+				done();
+				var attributes = {
+					day:6,
+					hour:23,
+					minute:59
+				};
+				var openingHourTime = new OpeningHourTime(attributes);
+
+				expect(openingHourTime.isEndOfWeek()).to.be.ok();
+			});
+
+			it('should return false if we are not at the end of the week', function (done) {
+				done();
+				var attributes = {
+					day:5,
+					hour:22,
+					minute:49
+				};
+				var openingHourTime = new OpeningHourTime(attributes);
+
+				expect(openingHourTime.isEndOfWeek()).not.to.be.ok();
+			});
+			
+		});
+
+		describe('isStartOfWeekend', function () {
+			it('should return true of we are at the start of the weekend', function (done) {
+				done();
+				var attributes = {
+					day:3,
+					hour:22,
+					minute:0
+				};
+
+				var openingHourTime = new OpeningHourTime(attributes);
+
+				expect(openingHourTime.isStartOfWeekend()).to.be.ok();
+			});
+		});
+
+		describe('isEndOfWeekend', function () {
+			it('should return true of we are at the end of the weekend', function (done) {
+				done();
+				var attributes = {
+					day:6,
+					hour:23,
+					minute:59
+				};
+
+				var openingHourTime = new OpeningHourTime(attributes);
+
+				expect(openingHourTime.isEndOfWeekend()).to.be.ok();
+			});
 		});
 	});
 
@@ -51,8 +141,14 @@ describe('OpeningHours', function () {
 
 		it('constructor should accept start and end time as OpeningHourTime objects in a json and set them properly', function (done) {
 			done();
-			expect(mockObject.start).to.equal(startTime);
-			expect(mockObject.end).to.equal(endTime);
+			
+			expect(mockObject.start.day).to.equal(startTime.day);
+			expect(mockObject.start.hour).to.equal(startTime.hour);
+			expect(mockObject.start.minute).to.equal(startTime.minute);
+
+			expect(mockObject.end.day).to.equal(endTime.day);
+			expect(mockObject.end.hour).to.equal(endTime.hour);
+			expect(mockObject.end.minute).to.equal(endTime.minute);
 		});
 
 		describe('containsDate(date)', function () {
@@ -176,6 +272,52 @@ describe('OpeningHours', function () {
 				expect(sixthTimeToCheck.isBefore(timeToCheckAgainst)).not.to.be.ok();
 			});
 		});
+
+		describe('coversAllWeek', function () {
+
+			it('should return true if range covers the whole week', function (done) {
+				done();
+				var startTime = new OpeningHourTime({
+					day: 0,
+					hour: 0,
+					minute: 0
+				});
+				var endTime = new OpeningHourTime({
+					day: 6,
+					hour: 23,
+					minute: 59
+				});
+				var mockObject = new OpeningHourRange({
+					start: startTime,
+					end: endTime
+				});
+
+				expect(mockObject.coversAllWeek()).to.be.ok();
+			});
+		});
+
+		describe('coversAllWeekend', function () {
+			it('should return true if range covers the whole weekend', function (done) {
+				done();
+				var startTime = new OpeningHourTime({
+					day: 3,
+					hour: 22,
+					minute: 0
+				});
+				var endTime = new OpeningHourTime({
+					day: 6,
+					hour: 23,
+					minute: 59
+				});
+				var mockObject = new OpeningHourRange({
+					start: startTime,
+					end: endTime
+				});
+
+				expect(mockObject.coversAllWeekend()).to.be.ok();
+
+			});
+		});
 	});
 
 	describe('OpeningHours', function () {
@@ -215,6 +357,105 @@ describe('OpeningHours', function () {
 				expect(mockObject.isOpen(firstDate)).not.to.be.ok();
 				expect(mockObject.isOpen(secondDate)).not.to.be.ok();
 				expect(mockObject.isOpen(thirdDate)).not.to.be.ok();
+			});
+		});
+
+		describe('isAlwaysOpen', function () {
+
+			it('should return false if we are not always open', function (done) {
+				done();
+				expect(mockObject.isAlwaysOpen()).not.to.be.ok();
+			});
+
+			it('should return true if we are always open', function (done) {
+				done();
+
+				var range = new OpeningHourRange({
+					start: new OpeningHourTime({ day: 0, hour: 0, minute: 0 }),
+					end: new OpeningHourTime({ day: 6, hour: 23, minute: 59 })
+				});
+
+				var openingHours = new OpeningHours([range]);
+
+				expect(openingHours.isAlwaysOpen()).to.be.ok();
+			});
+		});
+
+		describe('isOpenAllWeekend', function () {
+
+			it('should return true if we are open all weekend', function (done) {
+				done();
+				var range = new OpeningHourRange({
+					start: new OpeningHourTime({ day: 3, hour: 22, minute: 0 }),
+					end: new OpeningHourTime({ day: 6, hour: 23, minute: 59 })
+				});
+
+				var openingHours = new OpeningHours([range]);
+
+				expect(openingHours.isOpenAllWeekend()).to.be.ok();
+
+			});
+		});
+	});
+
+	describe('OpeningHoursFormatter', function () {
+		var formatter = new OpeningHoursFormatter();
+
+		describe('formattedOpeningHours', function () {
+
+			it('should return a string', function (done) {
+				done();
+				expect(formatter.formattedOpeningHours()).to.be.a('string');
+			});
+
+			it('should return appropriately formatted string when always open', function (done) {
+
+				done();
+
+				var range = new OpeningHourRange({
+					start: new OpeningHourTime({ day: 0, hour: 0, minute: 0 }),
+					end: new OpeningHourTime({ day: 6, hour: 23, minute: 59 })
+				});
+
+				var openingHours = new OpeningHours([range]);
+
+				expect(formatter.formattedOpeningHours(openingHours)).to.be("Døgnåpent alle dager.");
+
+				var otherRange = new OpeningHourRange({
+					start: new OpeningHourTime({ day: 0, hour: 0, minute: 0 }),
+					end: new OpeningHourTime({ day: 5, hour: 23, minute: 59 })
+				});
+
+				var otherOpeningHours = new OpeningHours([otherRange]);
+
+				expect(formatter.formattedOpeningHours(otherOpeningHours)).not.to.be("Døgnåpent alle dager.");
+
+			});
+
+			it('should return appropriately formatted string when open on weekends', function (done) {
+				done();
+				var range = new OpeningHourRange({
+					start: new OpeningHourTime({ day: 3, hour: 22, minute: 0 }),
+					end: new OpeningHourTime({ day: 6, hour: 23, minute: 59 })
+				});
+
+				var openingHours = new OpeningHours([range]);
+
+				expect(formatter.formattedOpeningHours(openingHours)).to.be("Døgnåpent helg.");
+
+			});
+
+			it('should return appropriately formatted string for a set of regular opening hours', function (done) {
+				done();
+				var range = new OpeningHourRange({
+					start: new OpeningHourTime({ day: 0, hour: 15, minute: 0 }),
+					end: new OpeningHourTime({ day: 1, hour: 8, minute: 0 })
+				});
+
+				var openingHours = new OpeningHours([range]);
+
+				expect(formatter.formattedOpeningHours(openingHours)).to.be("Mandag 15:00 - 08:00");
+
 			});
 		});
 	});
