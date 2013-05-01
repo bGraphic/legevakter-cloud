@@ -8,7 +8,7 @@
  *
  */
 
-var OpeningHoursModule = require('../cloud/OpeningHours.js');
+var OpeningHoursModule = require('../lib/model/OpeningHours.js');
 var OpeningHourRange = OpeningHoursModule.OpeningHourRange;
 var OpeningHourTime = OpeningHoursModule.OpeningHourTime;
 var OpeningHours = OpeningHoursModule.OpeningHours;
