@@ -21,7 +21,7 @@ var expect = require('expect.js');
 describe('OpeningHourConvert', function () {
 	describe('convertOpeningHours', function () {
 
-		var data = "930-1920,2370-3360,3810-4800,5250-6240,6690-10560";
+		var data = "480-945,1920-2385,3360-3825,4800-5265,6240-6705";
 		var output = converter.convertToOpeningHours(data);
 
 		it('returns an object of type OpeningHours', function (done) {
@@ -38,8 +38,8 @@ describe('OpeningHourConvert', function () {
 			done();
 			var date = new Date(2013,3,30,14,00);
 			var secondDate = new Date(2013,3,30,22,00);
-			expect(output.isOpen(date)).not.to.be.ok();
-			expect(output.isOpen(secondDate)).to.be.ok();
+			expect(output.isOpen(date)).to.be.ok();
+			expect(output.isOpen(secondDate)).not.to.be.ok();
 		});
 	});
 
